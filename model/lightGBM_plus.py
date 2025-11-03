@@ -27,31 +27,31 @@ np.random.seed(RANDOM_SEED)
 
 # Feature file paths (update these to your actual paths)
 FEATURE_FILES = {
-    'basic_stats': './features/basic_agg_feats.feather',
-    'advanced_stats': './features/advanced_agg_feats.feather',
-    'diff_feats': './features/diff_feats.feather',
-    'time_series_feats': './features/time_series_feats.feather',
-    'lag_feats': './features/lag_feats.feather',
-    'rank_feats': './features/rank_feats.feather',
-    'count_feats': './features/count_feats.feather',
-    'category_agg_feats': './features/category_agg_feats.feather',
-    'trend_feats': './features/trend_feats.feather',
+    'cat_feature'           : r"S:/ML_Project/new_data/input_train/cat_feature.feather",
+    'diff_feature'          : r"S:/ML_Project/new_data/input_train/diff_feature.feather",
+    'last3_cat_feature'     : r"S:/ML_Project/new_data/input_train/last3_cat_feature.feather",
+    'last3_diff_feature'    : r"S:/ML_Project/new_data/input_train/last3_diff_feature.feather",
+    'last3_num_feature'     : r"S:/ML_Project/new_data/input_train/last3_num_feature.feather",
+    'last6_num_feature'     : r"S:/ML_Project/new_data/input_train/last6_num_feature.feather",
+    'num_feature'           : r"S:/ML_Project/new_data/input_train/num_feature.feather",
+    'rank_num_feature'      : r"S:/ML_Project/new_data/input_train/rank_num_feature.feather",
+    'ym_rank_num_feature'   : r"S:/ML_Project/new_data/input_train/ym_rank_num_feature.feather",
 }
 
-LABEL_FILE = './input/train_labels.csv'
+LABEL_FILE = r"S:/ML_Project/amex-default-prediction/train_labels.csv"
 TEST_FEATURE_FILES = {
-    'basic_stats': './features/test_basic_agg_feats.feather',
-    'advanced_stats': './features/test_advanced_agg_feats.feather',
-    'diff_feats': './features/test_diff_feats.feather',
-    'time_series_feats': './features/test_time_series_feats.feather',
-    'lag_feats': './features/test_lag_feats.feather',
-    'rank_feats': './features/test_rank_feats.feather',
-    'count_feats': './features/test_count_feats.feather',
-    'category_agg_feats': './features/test_category_agg_feats.feather',
-    'trend_feats': './features/test_trend_feats.feather',
+    'cat_feature'           : r"S:/ML_Project/new_data/input_test/cat_feature.feather",
+    'diff_feature'          : r"S:/ML_Project/new_data/input_test/diff_feature.feather",
+    'last3_cat_feature'     : r"S:/ML_Project/new_data/input_test/last3_cat_feature.feather",
+    'last3_diff_feature'    : r"S:/ML_Project/new_data/input_test/last3_diff_feature.feather",
+    'last3_num_feature'     : r"S:/ML_Project/new_data/input_test/last3_num_feature.feather",
+    'last6_num_feature'     : r"S:/ML_Project/new_data/input_test/last6_num_feature.feather",
+    'num_feature'           : r"S:/ML_Project/new_data/input_test/num_feature.feather",
+    'rank_num_feature'      : r"S:/ML_Project/new_data/input_test/rank_num_feature.feather",
+    'ym_rank_num_feature'   : r"S:/ML_Project/new_data/input_test/ym_rank_num_feature.feather",
 }
 
-OUTPUT_DIR = './ensemble_models/'
+OUTPUT_DIR = r"S:/ML_Project/new_data/run1/"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ============================================================================
@@ -478,21 +478,20 @@ if __name__ == "__main__":
     
     feature_combinations = {
         # Individual feature sets (for comparison)
-        'model_basic_only': ['basic_stats'],
-        'model_advanced_only': ['advanced_stats'],
-        'model_diff_only': ['diff_feats'],
-        'model_timeseries_only': ['time_series_feats'],
+        'model_cat_only': ['cat_feature'],
+        'model_num_only': ['num_feature'],
+        'model_diff_only': ['diff_feature'],
+
         
         # Combined feature sets (strategic combinations)
-        'model_stats_combo': ['basic_stats', 'advanced_stats'],
-        'model_temporal_combo': ['diff_feats', 'time_series_feats', 'lag_feats', 'trend_feats'],
-        'model_ranking_combo': ['rank_feats', 'count_feats'],
+        'model_temporal_combo': ['last3_num_feature', 'last6_num_feature', 'ym_rank_num_feature'],
+        'model_rank_combo': ['rank_num_feature', 'ym_rank_num_feature'],
+        'model_cat_diff_combo': ['cat_feature', 'diff_feature'],
         
         # Progressive builds
-        'model_small': ['basic_stats', 'diff_feats'],
-        'model_medium': ['basic_stats', 'advanced_stats', 'diff_feats', 'time_series_feats'],
-        'model_large': ['basic_stats', 'advanced_stats', 'diff_feats', 'time_series_feats', 
-                        'lag_feats', 'rank_feats'],
+        'model_small': ['cat_feature', 'num_feature'],
+        'model_medium': ['cat_feature', 'num_feature', 'diff_feature'],
+        'model_large': ['cat_feature', 'num_feature', 'diff_feature', 'last3_cat_feature', 'last3_diff_feature'],
         
         # Full model (all features)
         'model_full': list(FEATURE_FILES.keys()),
