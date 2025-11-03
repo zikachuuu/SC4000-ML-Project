@@ -247,12 +247,12 @@ if __name__ == "__main__":
     # Basic usage
     print("BASIC ENSEMBLE\n")
     output_files = ensemble_predictions(
-        pred_file1=r"C:\Users\leyan\OneDrive\NTU\Y4 Sem1\SC4000 Machine Learning\SC4000 Project\Run 2\lightgbm_test_predictions.csv",
-        pred_file2=r"C:\Users\leyan\Downloads\final_submission_nn.csv",
-        output_dir=r"C:\Users\leyan\OneDrive\NTU\Y4 Sem1\SC4000 Machine Learning\SC4000 Project\Run 2 Ensembled",
+        pred_file1=r"C:\Users\leyan\OneDrive\NTU\Y4 Sem1\SC4000 Machine Learning\SC4000 Project\Run 2 Ensembled\ensemble_lightgbm_0.3_nn_0.7.csv",
+        pred_file2=r"C:\Users\leyan\OneDrive\NTU\Y4 Sem1\SC4000 Machine Learning\SC4000 Project\Run 3\lightgbm_test_predictions.csv",
+        output_dir=r"C:\Users\leyan\OneDrive\NTU\Y4 Sem1\SC4000 Machine Learning\SC4000 Project\Run 3 Ensembled (from run 2)",
         weight_step=0.1,
-        model1_name='lightgbm',
-        model2_name='nn'
+        model1_name='run2_ensemble',
+        model2_name='lightgbm'
     )
     
     # print("\n" + "=" * 80)
