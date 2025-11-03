@@ -6,8 +6,8 @@ train_original = pd.read_feather(r"S:/ML_Project/new_data/train_data.feather")
 test_original = pd.read_feather(r"S:/ML_Project/new_data/test_data.feather")
 
 # Get the customer_ids for train and test
-train_ids = set(train_original['customer_id'])
-test_ids = set(test_original['customer_id'])
+train_ids = set(train_original['customer_ID'])
+test_ids = set(test_original['customer_ID'])
 
 # Process each feature-engineered file in the input folder
 input_folder        = r"S:/ML_Project/new_data/input/"
@@ -26,8 +26,8 @@ for filename in os.listdir(input_folder):
         df = pd.read_feather(filepath)
         
         # Split based on customer_id
-        train_df = df[df['customer_id'].isin(train_ids)]
-        test_df = df[df['customer_id'].isin(test_ids)]
+        train_df = df[df['customer_ID'].isin(train_ids)]
+        test_df = df[df['customer_ID'].isin(test_ids)]
         
         # Save to respective folders
         train_df.to_feather(os.path.join(output_train_folder, filename))
