@@ -662,7 +662,7 @@ if __name__ == "__main__":
         'ym_rank_num_feature': r"S:/ML_Project/new_data/input_test/ym_rank_num_feature.feather",
     }
     
-    OUTPUT_DIR = r"S:/ML_Project/new_data/run1/"
+    OUTPUT_DIR = r"S:/ML_Project/new_data/run2/"
     
     # Feature combinations to train/test
     feature_combinations = {
