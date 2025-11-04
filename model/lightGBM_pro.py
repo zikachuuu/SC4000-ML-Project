@@ -636,93 +636,137 @@ if __name__ == "__main__":
     
     # Feature files for training
     FEATURE_FILES = {
-        'cat_feature': r"S:/ML_Project/new_data/input_train/cat_feature.feather",
-        'diff_feature': r"S:/ML_Project/new_data/input_train/diff_feature.feather",
-        'last3_cat_feature': r"S:/ML_Project/new_data/input_train/last3_cat_feature.feather",
-        'last3_diff_feature': r"S:/ML_Project/new_data/input_train/last3_diff_feature.feather",
-        'last3_num_feature': r"S:/ML_Project/new_data/input_train/last3_num_feature.feather",
-        'last6_num_feature': r"S:/ML_Project/new_data/input_train/last6_num_feature.feather",
-        'num_feature': r"S:/ML_Project/new_data/input_train/num_feature.feather",
-        'rank_num_feature': r"S:/ML_Project/new_data/input_train/rank_num_feature.feather",
-        'ym_rank_num_feature': r"S:/ML_Project/new_data/input_train/ym_rank_num_feature.feather",
+        'cat_feature'           : r"S:/ML_Project/new_data/input_train/cat_feature.feather",
+        'diff_feature'          : r"S:/ML_Project/new_data/input_train/diff_feature.feather",
+        'last3_cat_feature'     : r"S:/ML_Project/new_data/input_train/last3_cat_feature.feather",
+        'last3_diff_feature'    : r"S:/ML_Project/new_data/input_train/last3_diff_feature.feather",
+        'last3_num_feature'     : r"S:/ML_Project/new_data/input_train/last3_num_feature.feather",
+        'last6_num_feature'     : r"S:/ML_Project/new_data/input_train/last6_num_feature.feather",
+        'num_feature'           : r"S:/ML_Project/new_data/input_train/num_feature.feather",
+        'rank_num_feature'      : r"S:/ML_Project/new_data/input_train/rank_num_feature.feather",
+        'ym_rank_num_feature'   : r"S:/ML_Project/new_data/input_train/ym_rank_num_feature.feather",
     }
     
     LABEL_FILE = r"S:/ML_Project/amex-default-prediction/train_labels.csv"
     
     # Feature files for testing
     TEST_FEATURE_FILES = {
-        'cat_feature': r"S:/ML_Project/new_data/input_test/cat_feature.feather",
-        'diff_feature': r"S:/ML_Project/new_data/input_test/diff_feature.feather",
-        'last3_cat_feature': r"S:/ML_Project/new_data/input_test/last3_cat_feature.feather",
-        'last3_diff_feature': r"S:/ML_Project/new_data/input_test/last3_diff_feature.feather",
-        'last3_num_feature': r"S:/ML_Project/new_data/input_test/last3_num_feature.feather",
-        'last6_num_feature': r"S:/ML_Project/new_data/input_test/last6_num_feature.feather",
-        'num_feature': r"S:/ML_Project/new_data/input_test/num_feature.feather",
-        'rank_num_feature': r"S:/ML_Project/new_data/input_test/rank_num_feature.feather",
-        'ym_rank_num_feature': r"S:/ML_Project/new_data/input_test/ym_rank_num_feature.feather",
+        'cat_feature'           : r"S:/ML_Project/new_data/input_test/cat_feature.feather",
+        'diff_feature'          : r"S:/ML_Project/new_data/input_test/diff_feature.feather",
+        'last3_cat_feature'     : r"S:/ML_Project/new_data/input_test/last3_cat_feature.feather",
+        'last3_diff_feature'    : r"S:/ML_Project/new_data/input_test/last3_diff_feature.feather",
+        'last3_num_feature'     : r"S:/ML_Project/new_data/input_test/last3_num_feature.feather",
+        'last6_num_feature'     : r"S:/ML_Project/new_data/input_test/last6_num_feature.feather",
+        'num_feature'           : r"S:/ML_Project/new_data/input_test/num_feature.feather",
+        'rank_num_feature'      : r"S:/ML_Project/new_data/input_test/rank_num_feature.feather",
+        'ym_rank_num_feature'   : r"S:/ML_Project/new_data/input_test/ym_rank_num_feature.feather",
     }
     
-    OUTPUT_DIR = r"S:/ML_Project/new_data/run2/"
+    OUTPUT_DIR = r"S:/ML_Project/new_data/pro_run1/"
     
     # Feature combinations to train/test
     feature_combinations = {
-        # Individual feature sets (for comparison)
-        'model_cat_only': ['cat_feature'],
-        'model_num_only': ['num_feature'],
-        'model_diff_only': ['diff_feature'],
+        # ============== Individual Feature Sets (Baseline Comparisons) ==============
+        'model_cat_only':           ['cat_feature'],
+        'model_num_only':           ['num_feature'],
+        'model_diff_only':          ['diff_feature'],
+        'model_rank_only':          ['rank_num_feature'],
+        'model_ym_rank_only':       ['ym_rank_num_feature'],
+        'model_last3_num_only':     ['last3_num_feature'],
+        'model_last6_num_only':     ['last6_num_feature'],
         
-        # Combined feature sets (strategic combinations)
-        'model_temporal_combo': ['last3_num_feature', 'last6_num_feature', 'ym_rank_num_feature'],
-        'model_rank_combo': ['rank_num_feature', 'ym_rank_num_feature'],
-        'model_cat_diff_combo': ['cat_feature', 'diff_feature'],
+        # ============== Two-Feature Combinations (Synergy Testing) ==============
+        'model_cat_num':            ['cat_feature', 'num_feature'],
+        'model_cat_diff':           ['cat_feature', 'diff_feature'],
+        'model_num_diff':           ['num_feature', 'diff_feature'],
+        'model_num_rank':           ['num_feature', 'rank_num_feature'],
+        'model_cat_rank':           ['cat_feature', 'rank_num_feature'],
+        'model_rank_ym_rank':       ['rank_num_feature', 'ym_rank_num_feature'],
         
-        # Progressive builds
-        'model_small': ['cat_feature', 'num_feature'],
-        'model_medium': ['cat_feature', 'num_feature', 'diff_feature'],
-        'model_large': ['cat_feature', 'num_feature', 'diff_feature', 'last3_cat_feature', 'last3_diff_feature'],
+        # ============== Temporal Feature Combinations ==============
+        'model_temporal_last3':     ['last3_num_feature', 'last3_cat_feature', 'last3_diff_feature'],
+        'model_temporal_last36':    ['last3_num_feature', 'last6_num_feature'],
+        'model_temporal_all':       ['last3_num_feature', 'last6_num_feature', 'last3_cat_feature', 'last3_diff_feature'],
+        'model_temporal_with_rank': ['last3_num_feature', 'last6_num_feature', 'ym_rank_num_feature'],
         
-        # Full model (all features)
-        'model_full': list(FEATURE_FILES.keys()),
-    }
-    
+        # ============== Ranking Feature Combinations ==============
+        'model_all_ranks':          ['rank_num_feature', 'ym_rank_num_feature'],
+        'model_ranks_with_base':    ['num_feature', 'rank_num_feature', 'ym_rank_num_feature'],
+        
+        # ============== Core Features (No Temporal) ==============
+        'model_core_basic':         ['cat_feature', 'num_feature', 'diff_feature'],
+        'model_core_with_rank':     ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],
+        'model_core_with_all_rank': ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
+        
+        # ============== Progressive Builds (Incremental Feature Addition) ==============
+        'model_small':              ['cat_feature', 'num_feature'],
+        'model_medium':             ['cat_feature', 'num_feature', 'diff_feature'],
+        'model_medium_plus':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],
+        'model_large':              ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
+        'model_large_plus':         ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 'last3_num_feature'],
+        'model_xlarge':             ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 
+                                    'last3_num_feature', 'last6_num_feature'],
+        
+        # ============== Specialized Combinations ==============
+        'model_stat_focused':       ['num_feature', 'diff_feature', 'last3_num_feature', 'last6_num_feature'],
+        'model_cat_focused':        ['cat_feature', 'last3_cat_feature'],
+        'model_trend_focused':      ['diff_feature', 'last3_diff_feature', 'ym_rank_num_feature'],
+        'model_recent_only':        ['last3_num_feature', 'last3_cat_feature', 'last3_diff_feature'],
+        
+        # ============== Exclusion Testing (What happens without X?) ==============
+        'model_no_cat':             ['num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 
+                                    'last3_num_feature', 'last6_num_feature'],
+        'model_no_temporal':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
+        'model_no_rank':            ['cat_feature', 'num_feature', 'diff_feature', 'last3_num_feature', 
+                                    'last6_num_feature', 'last3_cat_feature', 'last3_diff_feature'],
+        'model_no_diff':            ['cat_feature', 'num_feature', 'rank_num_feature', 'ym_rank_num_feature', 
+                                    'last3_num_feature', 'last6_num_feature', 'last3_cat_feature'],
+        
+        # ============== Kitchen Sink Models ==============
+        'model_almost_full':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature',
+                                    'last3_num_feature', 'last6_num_feature', 'last3_cat_feature'],
+        'model_full':               list(FEATURE_FILES.keys()),  # All features
+    }    
     # ==================================== Hyperparameter Grid ====================================
     
     # Number of iterations for RandomizedSearchCV
-    num_iter = 1  # TODO: Increase for thorough tuning (e.g., 10-50)
+    num_iter = 15  # TODO: Increase for thorough tuning (e.g., 10-50)
     
     # Simplified param grid for testing
-    param_grid = {
-        'n_estimators': [100],
-        'max_depth': [-1],
-        'learning_rate': [0.1],
-        'num_leaves': [31],
-        'min_child_samples': [20],
-        'subsample': [1.0],
-        'colsample_bytree': [1.0],
-        'reg_alpha': [0],
-        'reg_lambda': [0],
-    }
+    # param_grid = {
+    #     'n_estimators': [100],
+    #     'max_depth': [-1],
+    #     'learning_rate': [0.1],
+    #     'num_leaves': [31],
+    #     'min_child_samples': [20],
+    #     'subsample': [1.0],
+    #     'colsample_bytree': [1.0],
+    #     'reg_alpha': [0],
+    #     'reg_lambda': [0],
+    # }
     
     # Full param grid for thorough tuning (uncomment for full runs)
-    # param_grid = {
-    #     'n_estimators': [100, 200, 500],
-    #     'max_depth': [-1, 10, 20],
-    #     'learning_rate': [0.01, 0.05, 0.1],
-    #     'num_leaves': [31, 63, 127],
-    #     'min_child_samples': [10, 20, 50],
-    #     'subsample': [0.8, 0.9, 1.0],
-    #     'colsample_bytree': [0.8, 0.9, 1.0],
-    #     'reg_alpha': [0, 0.01, 0.1],
-    #     'reg_lambda': [0, 0.01, 0.1],
-    # }
+    param_grid = {
+        'n_estimators'      : [500, 1000, 1500]             ,
+        'max_depth'         : [7, 10, 15, -1]               ,
+        'learning_rate'     : [0.01, 0.03, 0.05, 0.1]       ,
+        'num_leaves'        : [31, 63, 127, 255]            ,
+        'min_child_samples' : [10, 20, 30, 50]              ,
+        'subsample'         : [0.7, 0.8, 0.9]               ,
+        'colsample_bytree'  : [0.7, 0.8, 0.9]               ,
+        'reg_alpha'         : [0, 0.1, 0.5, 1.0]            ,
+        'reg_lambda'        : [0, 0.1, 0.5, 1.0]            ,
+        'min_split_gain'    : [0.0, 0.1, 0.5]               ,   # Minimum loss reduction required to make a split
+        'scale_pos_weight'  : [1, 2, 3]                     ,   # Handle class imbalance
+    }
     
     # ==================================== Optional Parameters ====================================
     
-    cv_folds = 2
-    holdout_size = 0.2
-    max_missing_rate = 0.95
-    top_n_param = 5
-    top_n_features = 20
+    cv_folds            = 5
+    holdout_size        = 0.2
+    max_missing_rate    = 0.9
+    top_n_param         = 5
+    top_n_features      = 20
     
     # =============================================================================================
     
