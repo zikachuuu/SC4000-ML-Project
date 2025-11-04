@@ -17,6 +17,9 @@ import lightgbm as lgb
 import os
 import gc
 
+# Use RandomizedSearchCV with this distribution
+from scipy.stats import uniform, randint, loguniform
+
 """
 Light Gradient Boosting Machine (LightGBM) model training and evaluation.
 
@@ -301,6 +304,7 @@ def lightgbm_train(
         param_grid              : dict  = None                                  ,
         cv_folds                : int   = 5                                     ,
         holdout_size            : float = 0.2                                   ,
+        hyperparam_sample_frac  : float = 0.15                                  ,  # NEW PARAMETER
         max_missing_rate        : float = 0.95                                  ,
         top_n_param             : int   = 5                                     ,
         top_n_features          : int   = 20                                    ,
@@ -316,6 +320,7 @@ def lightgbm_train(
         param_grid: Hyperparameter grid for tuning
         cv_folds: Number of CV folds
         holdout_size: Fraction of data to hold out for validation
+        hyperparam_sample_frac: Fraction of training data to use for hyperparameter tuning (0 < x <= 1.0)
         max_missing_rate: Maximum allowed missing rate per feature
         top_n_param: Top N parameter combinations to log
         top_n_features: Top N features to plot
@@ -394,6 +399,41 @@ def lightgbm_train(
     train_logger.info(f"Training labels:\n{y_train.value_counts(normalize=True)}")
     train_logger.info(f"Validation labels:\n{y_val.value_counts(normalize=True)}")
     
+    # ========== NEW: Sample data for hyperparameter tuning ==========
+    if hyperparam_sample_frac < 1.0:
+        train_logger.info("="*80)
+        train_logger.info(f"Sampling {hyperparam_sample_frac*100:.1f}% of training data for hyperparameter tuning...")
+        
+        sample_size = int(len(X_train) * hyperparam_sample_frac)
+        
+        # Stratified sampling to maintain class distribution
+        X_hp_tune, X_hp_holdout, y_hp_tune, y_hp_holdout = train_test_split(
+            X_train,
+            y_train,
+            train_size=sample_size,
+            stratify=y_train,
+            random_state=RANDOM_SEED
+        )
+        
+        train_logger.info(f"Hyperparameter tuning sample: {len(X_hp_tune):,} rows ({hyperparam_sample_frac*100:.1f}%)")
+        train_logger.info(f"Held out from tuning: {len(X_hp_holdout):,} rows ({(1-hyperparam_sample_frac)*100:.1f}%)")
+        train_logger.info(f"Full training data: {len(X_train):,} rows (100%)")
+        train_logger.info(f"HP tuning sample labels:\n{y_hp_tune.value_counts(normalize=True)}")
+        train_logger.info("="*80)
+        
+        # Use sample for hyperparameter tuning
+        X_for_tuning = X_hp_tune
+        y_for_tuning = y_hp_tune
+        
+        # Clean up
+        del X_hp_holdout, y_hp_holdout
+        gc.collect()
+    else:
+        train_logger.info("Using full training data for hyperparameter tuning (hyperparam_sample_frac=1.0)")
+        X_for_tuning = X_train
+        y_for_tuning = y_train
+    # ================================================================
+    
     # Create LightGBM classifier
     train_logger.info("Creating LightGBM model...")
     lgb_model = lgb.LGBMClassifier(
@@ -423,9 +463,16 @@ def lightgbm_train(
         pre_dispatch=1,
         random_state=RANDOM_SEED,
     )
-    grid_search.fit(X_train, y_train)
+    
+    # Fit on sampled data (or full data if hyperparam_sample_frac=1.0)
+    grid_search.fit(X_for_tuning, y_for_tuning)
     
     train_logger.info("Hyperparameter tuning completed.")
+    
+    # Clean up tuning data
+    if hyperparam_sample_frac < 1.0:
+        del X_for_tuning, y_for_tuning, X_hp_tune, y_hp_tune
+        gc.collect()
     
     # Log CV results
     cv_results = grid_search.cv_results_
@@ -484,16 +531,30 @@ def lightgbm_train(
     except Exception as e:
         train_logger.warning(f"Failed to save cv_results_ to CSV: {e}")
     
-    # Get best model
-    best_model = grid_search.best_estimator_
-    n_trees = best_model.n_estimators
-    train_logger.info(f"Best model uses {n_trees} trees")
+    # ========== NEW: Train final model on FULL training data ==========
+    train_logger.info("="*80)
+    train_logger.info("Training final model on FULL training data with best hyperparameters...")
+    train_logger.info(f"Best hyperparameters: {grid_search.best_params_}")
     
-    # Evaluate on validation set
-    train_logger.info("Evaluating best model on holdout validation set...")
+    final_model = lgb.LGBMClassifier(
+        objective='binary',
+        random_state=RANDOM_SEED,
+        force_col_wise=True,
+        **grid_search.best_params_
+    )
     
-    y_pred_proba = best_model.predict_proba(X_val)[:, 1]
-    y_pred = best_model.predict(X_val)
+    final_model.fit(X_train, y_train)
+    
+    n_trees = final_model.n_estimators
+    train_logger.info(f"Final model trained with {n_trees} trees on {len(X_train):,} samples")
+    train_logger.info("="*80)
+    # ==================================================================
+    
+    # Evaluate on validation set (using final model trained on full data)
+    train_logger.info("Evaluating final model on holdout validation set...")
+    
+    y_pred_proba = final_model.predict_proba(X_val)[:, 1]
+    y_pred = final_model.predict(X_val)
     
     val_auc = roc_auc_score(y_val, y_pred_proba)
     train_logger.info(f"Validation ROC-AUC: {val_auc:.4f}")
@@ -501,7 +562,7 @@ def lightgbm_train(
     amex_score = _amex_metric_sklearn(y_val, y_pred_proba)
     train_logger.info(f"Validation AMEX metric: {amex_score:.6f}")
     train_logger.info(f"CV to Validation ROC-AUC difference: {val_auc - grid_search.best_score_:.6f}")
-    train_logger.info("Note: Negative difference may indicate slight overfitting during hyperparameter tuning.")
+    train_logger.info("Note: CV score was computed on sample data; validation score uses model trained on full data.")
     
     train_logger.info("\nClassification Report:")
     train_logger.info("\n" + classification_report(y_val, y_pred))
@@ -517,10 +578,10 @@ def lightgbm_train(
     train_logger.info(f"Confusion matrix saved to {confusion_matrix_path}")
     plt.close()
     
-    # Feature Importance
+    # Feature Importance (from final model)
     feature_importance = pd.DataFrame({
         'feature': X_train.columns,
-        'importance': best_model.feature_importances_
+        'importance': final_model.feature_importances_
     }).sort_values('importance', ascending=False)
     
     train_logger.info(f"Top {top_n_features} Feature Importances:")
@@ -536,10 +597,10 @@ def lightgbm_train(
     train_logger.info(f"Feature importance saved to {feature_importance_path}")
     plt.close()
     
-    # Save model
+    # Save final model (trained on full data)
     with open(model_output_path, 'wb') as f:
-        pickle.dump(best_model, f)
-    train_logger.info(f"Model saved to {model_output_path}")
+        pickle.dump(final_model, f)
+    train_logger.info(f"Final model saved to {model_output_path}")
     
     train_logger.info("="*80)
     train_logger.info("Training completed successfully!")
@@ -730,7 +791,8 @@ if __name__ == "__main__":
     # ==================================== Hyperparameter Grid ====================================
     
     # Number of iterations for RandomizedSearchCV
-    num_iter = 15  # TODO: Increase for thorough tuning (e.g., 10-50)
+    num_iter = 50                  # TODO: Increase for thorough tuning (e.g., 10-50)
+    hyperparam_sample_frac = 0.2    # TODO: Fraction of training data for hyperparameter tuning (0 < x <= 1.0)
     
     # Simplified param grid for testing
     # param_grid = {
@@ -746,27 +808,66 @@ if __name__ == "__main__":
     # }
     
     # Full param grid for thorough tuning (uncomment for full runs)
+    # param_grid = {
+    #     'n_estimators'      : [100, 500, 1000]              ,
+    #     'max_depth'         : [7, 10, 15, -1]               ,
+    #     'learning_rate'     : [0.01, 0.03, 0.05, 0.1]       ,
+    #     'num_leaves'        : [31, 63, 127, 255]            ,
+    #     'min_child_samples' : [10, 20, 30, 50]              ,
+    #     'subsample'         : [0.7, 0.8, 0.9]               ,
+    #     'colsample_bytree'  : [0.7, 0.8, 0.9]               ,
+    #     'reg_alpha'         : [0, 0.1, 0.5, 1.0]            ,
+    #     'reg_lambda'        : [0, 0.1, 0.5, 1.0]            ,
+    #     'min_split_gain'    : [0.0, 0.1, 0.5]               ,   # Minimum loss reduction required to make a split
+    #     'scale_pos_weight'  : [1, 2, 3]                     ,   # Handle class imbalance
+    # }
+
+    # Moderate param grid for balanced tuning
     param_grid = {
-        'n_estimators'      : [500, 1000, 1500]             ,
-        'max_depth'         : [7, 10, 15, -1]               ,
-        'learning_rate'     : [0.01, 0.03, 0.05, 0.1]       ,
-        'num_leaves'        : [31, 63, 127, 255]            ,
-        'min_child_samples' : [10, 20, 30, 50]              ,
-        'subsample'         : [0.7, 0.8, 0.9]               ,
-        'colsample_bytree'  : [0.7, 0.8, 0.9]               ,
-        'reg_alpha'         : [0, 0.1, 0.5, 1.0]            ,
-        'reg_lambda'        : [0, 0.1, 0.5, 1.0]            ,
-        'min_split_gain'    : [0.0, 0.1, 0.5]               ,   # Minimum loss reduction required to make a split
-        'scale_pos_weight'  : [1, 2, 3]                     ,   # Handle class imbalance
+        'n_estimators': [500, 1000],
+        'max_depth': [7, 10, -1],
+        'learning_rate': [0.05, 0.1],
+        'num_leaves': [31, 63],
+        'min_child_samples': [20, 50],
+        'subsample': [0.8, 1.0],
+        'colsample_bytree': [0.8, 1.0],
+        'reg_alpha': [0, 0.1],
+        'reg_lambda': [0, 0.1],
     }
-    
+    # Total combinations: ~512
+
+    # Expanded param grid with distributions for RandomizedSearchCV
+    # param_grid = {
+    #     # Tree structure
+    #     'n_estimators'      : randint(800, 2500),
+    #     'max_depth'         : [7, 10, 12, 15, 20, -1],
+    #     'num_leaves'        : randint(31, 200),
+        
+    #     # Learning
+    #     'learning_rate'     : loguniform(0.01, 0.2),  # Log-uniform for learning rate
+    #     'min_child_samples' : randint(10, 100),
+        
+    #     # Sampling
+    #     'subsample'         : uniform(0.7, 0.3),  # 0.7 to 1.0
+    #     'subsample_freq'    : [0, 1, 5, 10],
+    #     'colsample_bytree'  : uniform(0.7, 0.3),  # 0.7 to 1.0
+        
+    #     # Regularization
+    #     'reg_alpha'         : loguniform(0.001, 10),
+    #     'reg_lambda'        : loguniform(0.001, 10),
+    #     'min_split_gain'    : loguniform(0.001, 1.0),
+        
+    #     # Additional
+    #     'path_smooth'       : uniform(0, 1.0),
+    # }
+
     # ==================================== Optional Parameters ====================================
     
     cv_folds            = 5
     holdout_size        = 0.2
     max_missing_rate    = 0.9
-    top_n_param         = 5
-    top_n_features      = 20
+    top_n_param         = 5         # Log top 5 hyperparameter combinations
+    top_n_features      = 20        # Plot top 20 features by importance
     
     # =============================================================================================
     
@@ -806,6 +907,7 @@ if __name__ == "__main__":
                     num_iter=num_iter,
                     param_grid=param_grid,
                     cv_folds=cv_folds,
+                    hyperparam_sample_frac=hyperparam_sample_frac,  
                     holdout_size=holdout_size,
                     max_missing_rate=max_missing_rate,
                     top_n_param=top_n_param,
