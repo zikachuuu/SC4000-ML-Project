@@ -755,12 +755,12 @@ if __name__ == "__main__":
         # 'model_ranks_with_base':    ['num_feature', 'rank_num_feature', 'ym_rank_num_feature'],
         
         # ============== Core Features (No Temporal) ==============
-        'model_core_basic':         ['cat_feature', 'num_feature', 'diff_feature'],
-        'model_core_with_rank':     ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],
-        'model_core_with_all_rank': ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
+        # 'model_core_basic':         ['cat_feature', 'num_feature', 'diff_feature'],     # train done
+        # 'model_core_with_rank':     ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],     # train done
+        # 'model_core_with_all_rank': ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],   # train done
         
-        # ============== Progressive Builds (Incremental Feature Addition) ==============
-        'model_small':              ['cat_feature', 'num_feature'],
+        # # ============== Progressive Builds (Incremental Feature Addition) ==============
+        # 'model_small':              ['cat_feature', 'num_feature'],                     # train done
         'model_medium':             ['cat_feature', 'num_feature', 'diff_feature'],
         'model_medium_plus':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],
         'model_large':              ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
