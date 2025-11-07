@@ -877,15 +877,13 @@ if __name__ == "__main__":
         "==============================================\n"
     )
     
-    # _ = input(
-    #     "Before proceeding, remember to update paths and configurations.\n"
-    #     "After each run, output files will be saved in separate folders per combination.\n"
-    #     "\nPress Enter to continue...\n"
-    # )
+    _ = input(
+        "Before proceeding, remember to update paths and configurations.\n"
+        "After each run, output files will be saved in separate folders per combination.\n"
+        "\nPress Enter to continue...\n"
+    )
     
-    # choice = input("Enter 't' to train the model or 'e' to evaluate on test data: ").strip().lower()
-
-    choice = 't'
+    choice = input("Enter 't' to train the model or 'e' to evaluate on test data: ").strip().lower()
     
     if choice == 't':
         # Training mode: train model for each feature combination
