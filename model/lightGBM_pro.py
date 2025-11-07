@@ -733,7 +733,7 @@ if __name__ == "__main__":
         # 'model_diff_only':          ['diff_feature'],             # done
         # 'model_rank_only':          ['rank_num_feature'],         # done
         # 'model_ym_rank_only':       ['ym_rank_num_feature'],      # done
-        'model_last3_num_only':     ['last3_num_feature'],        # train done
+        # 'model_last3_num_only':     ['last3_num_feature'],        # done
         # 'model_last6_num_only':     ['last6_num_feature'],
         
         # ============== Two-Feature Combinations (Synergy Testing) ==============
@@ -755,9 +755,9 @@ if __name__ == "__main__":
         # 'model_ranks_with_base':    ['num_feature', 'rank_num_feature', 'ym_rank_num_feature'],
         
         # ============== Core Features (No Temporal) ==============
-        'model_core_basic':         ['cat_feature', 'num_feature', 'diff_feature'],     # train done
-        'model_core_with_rank':     ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],     # train done
-        'model_core_with_all_rank': ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],   # train done
+        # 'model_core_basic':         ['cat_feature', 'num_feature', 'diff_feature'],                                               # done
+        # 'model_core_with_rank':     ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],                           # done
+        # 'model_core_with_all_rank': ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],    # done
         
         # # ============== Progressive Builds (Incremental Feature Addition) ==============
         'model_small':              ['cat_feature', 'num_feature'],                     # train done
