@@ -760,10 +760,10 @@ if __name__ == "__main__":
         # 'model_core_with_all_rank': ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],    # done
         
         # # ============== Progressive Builds (Incremental Feature Addition) ==============
-        'model_small':              ['cat_feature', 'num_feature'],                     # train done
-        'model_medium':             ['cat_feature', 'num_feature', 'diff_feature'],       # train done
-        'model_medium_plus':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],     # train done
-        # 'model_large':              ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
+        # 'model_small':              ['cat_feature', 'num_feature'],                                                               # done
+        # 'model_medium':             ['cat_feature', 'num_feature', 'diff_feature'],                                               # done
+        # 'model_medium_plus':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],                           # done
+        'model_medium_plus_2':        ['cat_feature', 'num_feature', 'diff_feature', 'ym_rank_num_feature'],                         
         # 'model_large_plus':         ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 'last3_num_feature'],
         # 'model_xlarge':             ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 
         #                             'last3_num_feature', 'last6_num_feature'],
@@ -774,6 +774,7 @@ if __name__ == "__main__":
         # 'model_trend_focused':      ['diff_feature', 'last3_diff_feature', 'ym_rank_num_feature'],
         # 'model_recent_only':        ['last3_num_feature', 'last3_cat_feature', 'last3_diff_feature'],
         
+
         # # ============== Exclusion Testing (What happens without X?) ==============
         # 'model_no_cat':             ['num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 
         #                             'last3_num_feature', 'last6_num_feature'],
@@ -786,7 +787,7 @@ if __name__ == "__main__":
         # # ============== Kitchen Sink Models ==============
         # 'model_almost_full':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature',
         #                             'last3_num_feature', 'last6_num_feature', 'last3_cat_feature'],
-        # 'model_full':               list(FEATURE_FILES.keys()),  # All features
+        'model_full':               list(FEATURE_FILES.keys()),  # All features
     }    
     # ==================================== Hyperparameter Grid ====================================
     
