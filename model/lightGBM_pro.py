@@ -733,7 +733,7 @@ if __name__ == "__main__":
         # 'model_diff_only':          ['diff_feature'],             # done
         # 'model_rank_only':          ['rank_num_feature'],         # done
         # 'model_ym_rank_only':       ['ym_rank_num_feature'],      # done
-        # 'model_last3_num_only':     ['last3_num_feature'],        # train done
+        'model_last3_num_only':     ['last3_num_feature'],        # train done
         # 'model_last6_num_only':     ['last6_num_feature'],
         
         # ============== Two-Feature Combinations (Synergy Testing) ==============
@@ -755,38 +755,38 @@ if __name__ == "__main__":
         # 'model_ranks_with_base':    ['num_feature', 'rank_num_feature', 'ym_rank_num_feature'],
         
         # ============== Core Features (No Temporal) ==============
-        # 'model_core_basic':         ['cat_feature', 'num_feature', 'diff_feature'],     # train done
-        # 'model_core_with_rank':     ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],     # train done
-        # 'model_core_with_all_rank': ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],   # train done
+        'model_core_basic':         ['cat_feature', 'num_feature', 'diff_feature'],     # train done
+        'model_core_with_rank':     ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],     # train done
+        'model_core_with_all_rank': ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],   # train done
         
         # # ============== Progressive Builds (Incremental Feature Addition) ==============
-        # 'model_small':              ['cat_feature', 'num_feature'],                     # train done
-        'model_medium':             ['cat_feature', 'num_feature', 'diff_feature'],
-        'model_medium_plus':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],
-        'model_large':              ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
-        'model_large_plus':         ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 'last3_num_feature'],
-        'model_xlarge':             ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 
-                                    'last3_num_feature', 'last6_num_feature'],
+        'model_small':              ['cat_feature', 'num_feature'],                     # train done
+        'model_medium':             ['cat_feature', 'num_feature', 'diff_feature'],       # train done
+        'model_medium_plus':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],     # train done
+        # 'model_large':              ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
+        # 'model_large_plus':         ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 'last3_num_feature'],
+        # 'model_xlarge':             ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 
+        #                             'last3_num_feature', 'last6_num_feature'],
         
-        # ============== Specialized Combinations ==============
-        'model_stat_focused':       ['num_feature', 'diff_feature', 'last3_num_feature', 'last6_num_feature'],
-        'model_cat_focused':        ['cat_feature', 'last3_cat_feature'],
-        'model_trend_focused':      ['diff_feature', 'last3_diff_feature', 'ym_rank_num_feature'],
-        'model_recent_only':        ['last3_num_feature', 'last3_cat_feature', 'last3_diff_feature'],
+        # # ============== Specialized Combinations ==============
+        # 'model_stat_focused':       ['num_feature', 'diff_feature', 'last3_num_feature', 'last6_num_feature'],
+        # 'model_cat_focused':        ['cat_feature', 'last3_cat_feature'],
+        # 'model_trend_focused':      ['diff_feature', 'last3_diff_feature', 'ym_rank_num_feature'],
+        # 'model_recent_only':        ['last3_num_feature', 'last3_cat_feature', 'last3_diff_feature'],
         
-        # ============== Exclusion Testing (What happens without X?) ==============
-        'model_no_cat':             ['num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 
-                                    'last3_num_feature', 'last6_num_feature'],
-        'model_no_temporal':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
-        'model_no_rank':            ['cat_feature', 'num_feature', 'diff_feature', 'last3_num_feature', 
-                                    'last6_num_feature', 'last3_cat_feature', 'last3_diff_feature'],
-        'model_no_diff':            ['cat_feature', 'num_feature', 'rank_num_feature', 'ym_rank_num_feature', 
-                                    'last3_num_feature', 'last6_num_feature', 'last3_cat_feature'],
+        # # ============== Exclusion Testing (What happens without X?) ==============
+        # 'model_no_cat':             ['num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 
+        #                             'last3_num_feature', 'last6_num_feature'],
+        # 'model_no_temporal':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature'],
+        # 'model_no_rank':            ['cat_feature', 'num_feature', 'diff_feature', 'last3_num_feature', 
+        #                             'last6_num_feature', 'last3_cat_feature', 'last3_diff_feature'],
+        # 'model_no_diff':            ['cat_feature', 'num_feature', 'rank_num_feature', 'ym_rank_num_feature', 
+        #                             'last3_num_feature', 'last6_num_feature', 'last3_cat_feature'],
         
-        # ============== Kitchen Sink Models ==============
-        'model_almost_full':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature',
-                                    'last3_num_feature', 'last6_num_feature', 'last3_cat_feature'],
-        'model_full':               list(FEATURE_FILES.keys()),  # All features
+        # # ============== Kitchen Sink Models ==============
+        # 'model_almost_full':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature',
+        #                             'last3_num_feature', 'last6_num_feature', 'last3_cat_feature'],
+        # 'model_full':               list(FEATURE_FILES.keys()),  # All features
     }    
     # ==================================== Hyperparameter Grid ====================================
     
