@@ -763,7 +763,7 @@ if __name__ == "__main__":
         # 'model_small':              ['cat_feature', 'num_feature'],                                                               # done
         # 'model_medium':             ['cat_feature', 'num_feature', 'diff_feature'],                                               # done
         # 'model_medium_plus':        ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature'],                           # done
-        'model_medium_plus_2':        ['cat_feature', 'num_feature', 'diff_feature', 'ym_rank_num_feature'],                         
+        # 'model_medium_plus_2':        ['cat_feature', 'num_feature', 'diff_feature', 'ym_rank_num_feature'],                      # done train           
         # 'model_large_plus':         ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 'last3_num_feature'],
         # 'model_xlarge':             ['cat_feature', 'num_feature', 'diff_feature', 'rank_num_feature', 'ym_rank_num_feature', 
         #                             'last3_num_feature', 'last6_num_feature'],
